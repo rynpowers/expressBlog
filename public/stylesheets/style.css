@@ -1,0 +1,13 @@
+.snippet {
+  background: #eee;
+  border-radius: 5px;
+  padding-bottom: 20px;
+}
+
+.img-rounded {
+  border: 1px solid black;
+}
+
+.snippet-text {
+  margin-top: -10px;
+}
