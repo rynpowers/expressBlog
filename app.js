@@ -18,6 +18,6 @@ app.get('/blog/:id', (req, res) => {
   res.render('show')
 })
 
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log('Server running on Port '+port)
 });
