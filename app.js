@@ -37,6 +37,14 @@ app.get('/blog', (req, res) => {
   })
 });
 
+app.get('/blog/:id', (req, res) => {
+  Blog.findById(req.params.id).then((blog) => {
+    res.render('show', {blog});
+  }, (e) => {
+    console.log(e);
+  })
+})
+
 app.listen(port, () => {
   console.log('Server running on Port '+port)
 });

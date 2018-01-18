@@ -19,7 +19,7 @@
             <div class="caption snippet-text">
               <h4><strong><%= blog.created.toDateString() %></strong></h4>
               <strong><em>Created by Ryan</em></strong>
-              <p><%= blog.body %></p>
+              <p><%= blog.body.substring(0, 100) %>...</p>
               <a href="/blog/<%= blog._id %>">Read More</a>
             </div>
           </div>

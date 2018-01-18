@@ -3,17 +3,16 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
-      <h1>Blog Title</h1>
+      <h1><%= blog.title %></h1>
       <div class="thumbnail">
-        <img src="https://images.unsplash.com/photo-1467189386127-c4e5e31ee213?auto=format&fit=crop&w=1050&q=80">
+        <img src="<%= blog.image %>">
       </div>
       <div class="caption">
         <strong><em>Created by Ryan</em></strong>
-        <p><em>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Cras fermentum odio eu feugiat pretium nibh.</em></p>
       </div>
       <div class="well">
-        <h4><strong>January 18, 2018</strong></h4>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Id diam vel quam elementum. Leo integer malesuada nunc vel. Euismod quis viverra nibh cras pulvinar mattis nunc. Id nibh tortor id aliquet lectus proin nibh. Sit amet nulla facilisi morbi tempus iaculis urna id volutpat. Orci dapibus ultrices in iaculis. Aenean et tortor at risus viverra. Vitae turpis massa sed elementum tempus egestas sed. Id volutpat lacus laoreet non curabitur gravida arcu ac tortor. Id volutpat lacus laoreet non curabitur gravida arcu ac tortor. Faucibus a pellentesque sit amet porttitor eget. Massa sapien faucibus et molestie ac feugiat sed. Nisl vel pretium lectus quam id leo in. Nam libero justo laoreet sit amet cursus sit. Commodo ullamcorper a lacus vestibulum sed arcu. Orci dapibus ultrices in iaculis.</p>
+        <h4><strong><%= blog.created.toDateString() %></strong></h4>
+        <p><%= blog.body %></p>
       </div>
     </div>
   </div>
