@@ -2,6 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var {Blog} = require('./models/blogs')
+var {ObjectID} = require('mongodb');
 var app = express();
 
 mongoose.Promise = global.Promise;
@@ -23,28 +24,35 @@ app.post('/blog', (req, res) =>{
   var blog = new Blog(content);
 
   blog.save().then((doc) => {
-    console.log(doc);
+    res.send(doc);
   }, (e) => {
-    console.log(e);
+    res.status(400).send(e);
   })
 })
 
 app.get('/blog', (req, res) => {
-  Blog.find({}).then((blogs) => {
-    res.render('index', {blogs});
+  Blog.find().then((blogs) => {
+    res.send({blogs});
   }, (e) => {
-    console.log(e);
+    res.status(400).send(e);
   })
 });
 
 app.get('/blog/:id', (req, res) => {
+
+  if (!ObjectID.isValid(req.params.id)) {
+    return res.status(404).send()
+  }
   Blog.findById(req.params.id).then((blog) => {
-    res.render('show', {blog});
-  }, (e) => {
-    console.log(e);
-  })
-})
+    if (!blog) {
+      return res.status(404).send()
+    }
+    res.send(blog);
+  }).catch((e) => res.status(400).send())
+});
 
 app.listen(port, () => {
-  console.log('Server running on Port '+port)
+  console.log('Server running on Port '+ port)
 });
+
+module.exports = {app};
