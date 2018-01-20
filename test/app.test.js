@@ -49,7 +49,7 @@ describe('POST /blog', () => {
     .send(blog)
     .expect(200)
     .expect((res) => {
-      expect(res.body.title).toEqual(blog.title);
+      expect(res.body._id).toEqual(blog._id.toHexString());
     })
     .end((err, res) => {
       if (err) {
@@ -91,3 +91,96 @@ describe('GET /blog/:id', () => {
     .end(done);
   });
 });
+
+describe('DELETE /blog/:id', () => {
+  it('should delete a blog from the database', (done) => {
+
+    var id = blogs[0]._id.toHexString()
+
+    request(app)
+    .delete(`/blog/${id}`)
+    .expect(200)
+    .expect((res) => {
+      expect(res.body._id).toBe(id);
+    })
+    .end((err, res) => {
+      if (err) {
+        return done(err);
+      }
+      Blog.find().then((blogs) => {
+        expect(blogs.length).toBe(1);
+        done()
+      }).catch((e) => done(e))
+    });
+  });
+
+  it('should respond with 404 status', (done) => {
+    var id = '123'
+
+    request(app)
+    .delete(`/blog/${id}`)
+    .expect(404)
+    .end(done)
+  });
+
+  it('should respond with 404 status', (done) => {
+    var id = '5a6134fd82b2996163926aa5'
+
+    request(app)
+    .delete(`/blog/${id}`)
+    .expect(404)
+    .end(done);
+  });
+});
+
+describe('PATCH /blog/:id', () => {
+  it('should update blog title, body, image', (done) => {
+
+    var id = blogs[0]._id.toHexString()
+
+    request(app)
+    .patch(`/blog/${id}`)
+    .send({
+      title: "UPDATED",
+      image: "UPDATED",
+      body: "UPDATED"
+    })
+    .expect(200)
+    .expect((res) => {
+      expect(res.body.title).toBe("UPDATED");
+      expect(res.body.image).toBe("UPDATED");
+      expect(res.body.body).toBe("UPDATED");
+    })
+    .end(done)
+  })
+
+  it('should respond with 404 status', (done) => {
+
+    var id = "5a63555466783573eeed79b1"
+
+    request(app)
+    .patch(`/blog/${id}`)
+    .expect(404)
+    .end(done)
+  });
+
+  it('should respond with 404 status', (done) => {
+
+    var id = "5a63555466783573eeed79b1111"
+
+    request(app)
+    .patch(`/blog/${id}`)
+    .expect(404)
+    .end(done)
+  });
+
+  it('should respond with 404 status', (done) => {
+
+    var id = "5a635554"
+
+    request(app)
+    .patch(`/blog/${id}`)
+    .expect(404)
+    .end(done)
+  });
+})

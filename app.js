@@ -51,6 +51,37 @@ app.get('/blog/:id', (req, res) => {
   }).catch((e) => res.status(400).send())
 });
 
+app.delete('/blog/:id', (req, res) => {
+  if (!ObjectID.isValid(req.params.id)){
+    return res.status(404).send()
+  }
+  Blog.findByIdAndRemove(req.params.id).then((blog) => {
+    if (!blog) {
+      return res.status(404).send()
+    }
+    res.send(blog)
+  }).catch((e) => res.status(400).send(e));
+});
+
+app.patch('/blog/:id', (req, res) => {
+  
+  var body = {
+    title: req.body.title,
+    image: req.body.image,
+    body: req.body.image
+  }
+
+  if (!ObjectID.isValid(req.params.id)){
+    return res.status(404).send()
+  }
+  Blog.findByIdAndUpdate(req.params.id, {$set:body}, {new:true}).then((blog) => {
+    if (!blog) {
+      return res.status(404).send()
+    }
+    res.send(blog);
+  }).catch((e) => res.status(400).send(e));
+})
+
 app.listen(port, () => {
   console.log('Server running on Port '+ port)
 });
