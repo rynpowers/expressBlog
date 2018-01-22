@@ -1,8 +1,10 @@
-var express = require('express');
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
-var {Blog} = require('./models/blogs')
-var {ObjectID} = require('mongodb');
+const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const {Blog} = require('./models/blogs')
+const {ObjectID} = require('mongodb');
+const {User} = require('./models/users');
+const _ = require('lodash');
 var app = express();
 
 mongoose.Promise = global.Promise;
@@ -64,7 +66,7 @@ app.delete('/blog/:id', (req, res) => {
 });
 
 app.patch('/blog/:id', (req, res) => {
-  
+
   var body = {
     title: req.body.title,
     image: req.body.image,
@@ -81,6 +83,18 @@ app.patch('/blog/:id', (req, res) => {
     res.send(blog);
   }).catch((e) => res.status(400).send(e));
 })
+
+app.post('/user', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password'])
+
+  var user = new User(body)
+
+  user.save().then((user) => {
+    return user.generateAuthToken();
+  }).then((token) => {
+    res.header('x-auth', token).send(user);
+  }).catch((e) => res.status(400).send(e));
+});
 
 app.listen(port, () => {
   console.log('Server running on Port '+ port)
