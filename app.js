@@ -1,10 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const {Blog} = require('./models/blogs')
-const {ObjectID} = require('mongodb');
-const {User} = require('./models/users');
 const _ = require('lodash');
+
+const {ObjectID} = require('mongodb');
+const {authenticate} = require('./middleware/authenticate')
+const {Blog} = require('./models/blogs');
+const {User} = require('./models/users');
+
+
+
 var app = express();
 
 mongoose.Promise = global.Promise;
@@ -95,6 +100,12 @@ app.post('/user', (req, res) => {
     res.header('x-auth', token).send(user);
   }).catch((e) => res.status(400).send(e));
 });
+
+app.get('/user/me', authenticate, (req, res) => {
+  res.send(req.user)
+});
+
+
 
 app.listen(port, () => {
   console.log('Server running on Port '+ port)
