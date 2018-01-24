@@ -2,27 +2,11 @@ const expect = require('expect');
 const request = require('supertest');
 const {ObjectID} = require('mongodb');
 const {Blog} = require('./../models/blogs');
+const {createBlogs, blogs} = require('./seeds/seeds.js')
 
 const {app} = require('./../app');
 
-var blogs = [
-  {
-    _id: new ObjectID(),
-    title: 'hello',
-    image: "https://images.unsplash.com/photo-1467189386127-c4e5e31ee213?auto=format&fit=crop&w=1350&q=80",
-    body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum curabitur vitae nunc sed velit dignissim sodales. Nunc congue nisi vitae suscipit tellus mauris."
-  },
-  {
-    _id: new ObjectID(),
-    title: 'hello again',
-    image: "https://images.unsplash.com/photo-1467189386127-c4e5e31ee213?auto=format&fit=crop&w=1350&q=80",
-    body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum curabitur vitae nunc sed velit dignissim sodales. Nunc congue nisi vitae suscipit tellus mauris."
-  }
-]
-
-beforeEach((done) => {
-  Blog.remove({}).then(() => Blog.insertMany(blogs)).then(() => done()).catch((e) => done(e));
-});
+beforeEach(createBlogs);
 
 describe('GET /blog', () => {
   it('should get all blogs', (done) => {

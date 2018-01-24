@@ -1,0 +1,12 @@
+{
+  "test": {
+    "MONGODB_URI": "mongodb://localhost/expressBlogTest",
+    "PORT": 3000,
+    "JWT_SECRET": "bjknbjkdfs873b89ydsbui"
+  },
+  "development": {
+    "MONGODB_URI": "mongodb://localhost/expressBlog",
+    "PORT": 3000,
+    "JWT_SECRET": "hj543nki790dvb32hjvdsa"
+  }
+}

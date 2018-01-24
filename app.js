@@ -1,21 +1,16 @@
+const config = require('./config/config')
+
 const express = require('express');
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const _ = require('lodash');
 
 const {ObjectID} = require('mongodb');
+const {mongoose} = require('./db/mongoose')
 const {authenticate} = require('./middleware/authenticate')
 const {Blog} = require('./models/blogs');
 const {User} = require('./models/users');
 
-
-
 var app = express();
-
-mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost/expressBlog')
-
-var port = process.env.PORT || 3000;
 
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + '/public'));
@@ -121,8 +116,8 @@ app.delete('/users/me', authenticate, (req, res) => {
   }).catch((e) => res.status(400).send());
 });
 
-app.listen(port, () => {
-  console.log('Server running on Port '+ port)
+app.listen(process.env.PORT, () => {
+  console.log('Server running on Port '+ process.env.PORT)
 });
 
 module.exports = {app};
