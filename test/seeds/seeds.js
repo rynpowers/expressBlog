@@ -1,7 +1,9 @@
-const {ObjectID} = require('mongodb');
-const {Blog} = require('./../../models/blogs')
 const jwt = require('jsonwebtoken');
 const config = require('./../../config/config')
+
+const {ObjectID} = require('mongodb');
+const {Blog} = require('./../../models/blogs')
+const {User} = require('./../../models/users')
 
 var userOneId = new ObjectID();
 var userTwoId = new ObjectID();
@@ -26,16 +28,31 @@ var users = [
     _id: userOneId,
     email: 'ryan@gmail.com',
     password: 'password',
-    tokens: {
+    tokens: [{
       access: 'auth',
       token: jwt.sign({_id: userOneId.toHexString(), access: 'auth'}, process.env.JWT_SECRET)
-    }
+    }]
+  },
+  {
+    _id: userTwoId,
+    email: 'hillary@gmail.com',
+    password: 'password',
+    tokens: [{
+      access: 'auth',
+      token: jwt.sign({_id: userTwoId.toHexString(), access: 'auth'}, process.env.JWT_SECRET)
+    }]
   }
 ]
 
 const createBlogs = (done) => {
   Blog.remove({}).then(() => {
     return Blog.insertMany(blogs)
+  }).then(() => done());
+}
+
+const createUsers = (done) => {
+  User.remove({}).then(() => {
+    return User.insertMany(users)
   }).then(() => done());
 }
 
