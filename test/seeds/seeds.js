@@ -13,13 +13,15 @@ var blogs = [
     _id: new ObjectID(),
     title: 'hello',
     image: "https://images.unsplash.com/photo-1467189386127-c4e5e31ee213?auto=format&fit=crop&w=1350&q=80",
-    body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum curabitur vitae nunc sed velit dignissim sodales. Nunc congue nisi vitae suscipit tellus mauris."
+    body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum curabitur vitae nunc sed velit dignissim sodales. Nunc congue nisi vitae suscipit tellus mauris.",
+    author: userOneId
   },
   {
     _id: new ObjectID(),
     title: 'hello again',
     image: "https://images.unsplash.com/photo-1467189386127-c4e5e31ee213?auto=format&fit=crop&w=1350&q=80",
-    body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum curabitur vitae nunc sed velit dignissim sodales. Nunc congue nisi vitae suscipit tellus mauris."
+    body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Elementum curabitur vitae nunc sed velit dignissim sodales. Nunc congue nisi vitae suscipit tellus mauris.",
+    author: userTwoId
   }
 ]
 
@@ -47,13 +49,21 @@ var users = [
 const createBlogs = (done) => {
   Blog.remove({}).then(() => {
     return Blog.insertMany(blogs)
-  }).then(() => done());
+  }).then(() => done()).catch((e) => done(e));
 }
 
 const createUsers = (done) => {
   User.remove({}).then(() => {
-    return User.insertMany(users)
-  }).then(() => done());
+    var userOne = new User(users[0]).save();
+    var userTwo = new User(users[1]).save();
+
+    return Promise.all([userOne, userTwo])
+  }).then(() => done()).catch((e) => done(e));
 }
 
-module.exports = {createBlogs, blogs};
+module.exports = {
+  createBlogs,
+  createUsers,
+  users,
+  blogs
+};

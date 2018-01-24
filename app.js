@@ -21,8 +21,9 @@ app.get('/', (req, res) => {
   res.render('landing')
 });
 
-app.post('/blog', (req, res) =>{
-  var content = req.body
+app.post('/blog', authenticate, (req, res) =>{
+  var content = _.pick(req.body, ['title', 'image', 'body'])
+  content.author = req.user._id;
   var blog = new Blog(content);
 
   blog.save().then((doc) => {
@@ -32,20 +33,25 @@ app.post('/blog', (req, res) =>{
   })
 })
 
-app.get('/blog', (req, res) => {
-  Blog.find().then((blogs) => {
+app.get('/blog', authenticate, (req, res) => {
+  Blog.find({
+    author: req.user._id
+  }).then((blogs) => {
     res.send({blogs});
   }, (e) => {
     res.status(400).send(e);
   })
 });
 
-app.get('/blog/:id', (req, res) => {
+app.get('/blog/:id', authenticate, (req, res) => {
 
   if (!ObjectID.isValid(req.params.id)) {
     return res.status(404).send()
   }
-  Blog.findById(req.params.id).then((blog) => {
+  Blog.findOne({
+    _id: req.params.id,
+    author: req.user._id
+  }).then((blog) => {
     if (!blog) {
       return res.status(404).send()
     }
@@ -53,11 +59,14 @@ app.get('/blog/:id', (req, res) => {
   }).catch((e) => res.status(400).send())
 });
 
-app.delete('/blog/:id', (req, res) => {
+app.delete('/blog/:id', authenticate, (req, res) => {
   if (!ObjectID.isValid(req.params.id)){
     return res.status(404).send()
   }
-  Blog.findByIdAndRemove(req.params.id).then((blog) => {
+  Blog.findOneAndRemove({
+    _id: req.params.id,
+    author: req.user._id
+  }).then((blog) => {
     if (!blog) {
       return res.status(404).send()
     }
@@ -65,18 +74,17 @@ app.delete('/blog/:id', (req, res) => {
   }).catch((e) => res.status(400).send(e));
 });
 
-app.patch('/blog/:id', (req, res) => {
+app.patch('/blog/:id', authenticate, (req, res) => {
 
-  var body = {
-    title: req.body.title,
-    image: req.body.image,
-    body: req.body.image
-  }
+  var content = _.pick(req.body, ['title', 'image', 'body'])
 
   if (!ObjectID.isValid(req.params.id)){
     return res.status(404).send()
   }
-  Blog.findByIdAndUpdate(req.params.id, {$set:body}, {new:true}).then((blog) => {
+  Blog.findOneAndUpdate({
+    _id: req.params.id,
+    author: req.user._id
+  }, {$set:content}, {new:true}).then((blog) => {
     if (!blog) {
       return res.status(404).send()
     }
@@ -84,7 +92,7 @@ app.patch('/blog/:id', (req, res) => {
   }).catch((e) => res.status(400).send(e));
 })
 
-app.post('/user', (req, res) => {
+app.post('/users', (req, res) => {
   var body = _.pick(req.body, ['email', 'password'])
 
   var user = new User(body)
@@ -96,7 +104,7 @@ app.post('/user', (req, res) => {
   }).catch((e) => res.status(400).send(e));
 });
 
-app.get('/user/me', authenticate, (req, res) => {
+app.get('/users/me', authenticate, (req, res) => {
   res.send(req.user)
 });
 
